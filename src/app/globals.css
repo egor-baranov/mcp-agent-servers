@@ -24,3 +24,28 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Add this to your CSS file */
+details {
+  overflow: hidden; /* Prevent content from overflowing during animation */
+}
+
+details summary {
+  list-style: none; /* Remove default arrow for <summary> */
+}
+
+details summary::-webkit-details-marker {
+  display: none; /* Remove default marker in WebKit browsers */
+}
+
+.accordion-content {
+  overflow: hidden;
+  max-height: 0; /* Start collapsed */
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0; /* Start invisible */
+}
+
+details[open] .accordion-content {
+  max-height: 200px; /* Adjust based on your content's maximum height */
+  opacity: 1; /* Make visible */
+}

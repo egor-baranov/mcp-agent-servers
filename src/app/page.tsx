@@ -1,103 +1,166 @@
-import Image from "next/image";
-
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const servers = [
+        {
+            title: "Example 1",
+            description: "Retrieving and analyzing issues from Sentry.io",
+            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        },
+        {
+            title: "Example 2",
+            description: "Retrieving and analyzing issues from Sentry.io",
+            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        },
+        {
+            title: "Example 3",
+            description: "Retrieving and analyzing issues from Sentry.io",
+            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        }
+    ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    const faqItems = [
+        {
+            question: "What is the Model Context Protocol (MCP)?",
+            answer: "The Model Context Protocol (MCP) is an open protocol designed to enable seamless integration between LLM applications and external data sources and tools. It serves as a standardized way to connect LLMs with the context they need."
+        },
+        {
+            question: "What problem does MCP solve?",
+            answer: "MCP solves the problem of fragmented integrations between AI systems and data sources. It addresses the challenge of AI models being isolated from data and trapped behind information silos, replacing multiple custom implementations with a single universal protocol."
+        },
+        {
+            question: "Who developed the Model Context Protocol?",
+            answer: "The Model Context Protocol (MCP) was developed by Anthropic."
+        },
+        {
+            question: "What are some use cases for MCP?",
+            answer: "MCP can be used in various scenarios including: building AI-powered IDEs, enhancing chat interfaces, creating custom AI workflows, connecting AI systems with external data sources."
+        },
+        {
+            question: "Why is MCP important for AI development?",
+            answer: "The Model Context Protocol (MCP) is an open protocol designed to enable seamless integration between LLM applications and external data sources and tools. It serves as a standardized way to connect LLMs with the context they need."
+        },
+        {
+            question: "What is the Model Context Protocol (MCP)?",
+            answer: "MCP is important because it provides a universal, open standard that makes it simpler and more reliable to give AI systems access to the data they need, enabling better scaling of connected systems."
+        },
+        {
+            question: "What is the main advantage of using MCP over traditional integration methods?",
+            answer: "The main advantage is that MCP eliminates the need for custom implementations for each new data source by providing a single, standardized protocol, making it easier to scale and maintain AI systems that need to access multiple data sources.\n"
+        }
+    ];
+
+    return (
+        <div className="container mx-auto px-4 py-8">
+            {/* Header Section */}
+            <div className="mb-10">
+                <h1 className="text-3xl sm:text-4xl font-bold mb-3 text-center">
+                    GigaCode MCP Server Hack
+                </h1>
+                <p className="text-center text-base sm:text-lg mb-5 text-balance">
+                    A collection of servers for the Model Context Protocol.
+                </p>
+                <div className="flex justify-center">
+                    <a
+                        href="https://github.com/wong2/awesome-mcp-servers"
+                        target="_blank"
+                        className="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+                    >
+                        Submit your agent
+                    </a>
+                </div>
+            </div>
+
+            {/* Category Filters */}
+            <div className="mb-8 flex flex-wrap gap-2 justify-center">
+                {['All', 'Search', 'Web Scraping', 'Development'].map((category) => (
+                    <a
+                        key={category}
+                        href={`/category/${category.toLowerCase()}`}
+                        className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 ${
+                            category === 'Development' ? 'bg-primary text-primary-foreground' : ''
+                        }`}
+                    >
+                        {category}
+                    </a>
+                ))}
+            </div>
+
+            {/* Server Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {servers.map((server, index) => (
+                    <div key={index} className="rounded-xl border bg-card text-card-foreground shadow flex flex-col">
+                        <div className="flex flex-col space-y-1.5 p-6">
+                            <div className="font-semibold leading-none tracking-tight">
+                                {server.title}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                {server.description}
+                            </div>
+                        </div>
+                        <div className="flex items-center p-6 pt-0 mt-auto">
+                            <a
+                                href={server.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground w-full h-9 px-4 py-2"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="h-4 w-4"
+                                >
+                                    <path d="M15 3h6v6"></path>
+                                    <path d="M10 14 21 3"></path>
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                </svg>
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* FAQ Section */}
+            <section className="w-full max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8 mt-10">
+                <h2 className="text-3xl font-bold text-center mb-8">
+                    Model Context Protocol FAQ
+                </h2>
+                <div className="w-full">
+                    {faqItems.map((item, index) => (
+                        <div key={index} className="border-b">
+                            <details className="group">
+                                <summary className="flex items-center justify-between py-4 cursor-pointer">
+                                    <h3 className="font-semibold text-lg">{item.question}</h3>
+                                    <svg
+                                        className="h-4 w-4 transition-transform group-open:rotate-180"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="m6 9 6 6 6-6"></path>
+                                    </svg>
+                                </summary>
+                                <p className="pb-4 text-sm">{item.answer}</p>
+                            </details>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Footer */}
+            <div className="mt-3">
+                <p className="text-center text-sm">
+                    <span className="text-gray-500">Unlock the Power of Multiple AIs with </span>
+                    <a href="https://chathub.gg/?utm_source=mcpservers" target="_blank" className="underline">
+                        ChatHub
+                    </a>
+                </p>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }

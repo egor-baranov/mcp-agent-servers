@@ -76,7 +76,7 @@ export default function Home() {
                         key={category}
                         href={`/category/${category.toLowerCase()}`}
                         className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 ${
-                            category === 'Development' ? 'bg-primary text-primary-foreground' : ''
+                            category === 'All' ? 'bg-black text-white text-primary-foreground' : ''
                         }`}
                     >
                         {category}

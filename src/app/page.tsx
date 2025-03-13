@@ -1,5 +1,7 @@
 "use client";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
 
 // Define types for Server, FAQItem, and Category
 interface Server {
@@ -123,10 +125,14 @@ export default function Page() {
         closeModal(); // Close the modal after submission
     };
 
+    useEffect(() => {
+        Prism.highlightAll();
+    }, [isInfoOpen]);
+
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Header Section */}
-            <div className="mb-10">
+            <div className="mt-20 mb-20">
                 <h1 className="text-3xl sm:text-4xl font-bold mb-3 text-center">
                     GigaCode MCP Server Hack
                 </h1>
@@ -259,9 +265,9 @@ export default function Page() {
             {/* Footer */}
             <div className="mt-3">
                 <p className="text-center text-sm">
-                    <span className="text-gray-500">Unlock the Power of Multiple AIs with </span>
-                    <a href="https://chathub.gg/?utm_source=mcpservers" target="_blank" className="underline">
-                        ChatHub
+                    <span className="text-gray-500">Хакатон агентов для интеграции в </span>
+                    <a href="https://gigacode.ru" target="_blank" className="underline">
+                        GigaCode
                     </a>
                 </p>
             </div>
@@ -408,7 +414,7 @@ export default function Page() {
                             <div className="space-y-6">
                                 {/* Локальный MCP клиент */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Локальный MCP клиент</h3>
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">Локальный MCP клиент</h3>
                                     <p className="text-gray-600 mb-2">
                                         Локальный клиент (например, Claude Desktop или Zed) обеспечивает:
                                     </p>
@@ -418,7 +424,8 @@ export default function Page() {
                                         <li>Интеграцию с IDE</li>
                                         <li>Отладку и мониторинг</li>
                                     </ul>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
         {`#  Пример конфигурации клиента
 mcp-client {
   version: "2.3.1"
@@ -427,13 +434,13 @@ mcp-client {
     size: "2GB"
     ttl: "24h"
   }
-}`}
+}`} </code>
       </pre>
                                 </div>
 
                                 {/* Сервер пакетов */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Сервер пакетов</h3>
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">Сервер пакетов</h3>
                                     <p className="text-gray-600 mb-2">
                                         Централизованный репозиторий для хранения и распространения агентов:
                                     </p>
@@ -443,7 +450,8 @@ mcp-client {
                                         <li>Система зависимостей</li>
                                         <li>Интеграция с Bitbucket/GitHub</li>
                                     </ul>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
         {`# Пример структуры пакета
 /agents
   /my-agent
@@ -451,13 +459,13 @@ mcp-client {
       manifest.json
       agent.js
       dependencies.json
-      README.md`}
+      README.md`} </code>
       </pre>
                                 </div>
 
                                 {/* Агенты */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Агенты</h3>
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">Агенты</h3>
                                     <p className="text-gray-600 mb-2">
                                         Агенты распространяются в виде архивов и содержат:
                                     </p>
@@ -467,7 +475,8 @@ mcp-client {
                                         <li>Зависимости</li>
                                         <li>Документацию</li>
                                     </ul>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
         {`#  Пример manifest.json
 {
   "name": "data-processor",
@@ -481,7 +490,7 @@ mcp-client {
     "memory": "512MB",
     "timeout": "30s"
   }
-}`}
+}`} </code>
       </pre>
                                 </div>
 
@@ -489,11 +498,12 @@ mcp-client {
                                 <div>
                                     <h3 className="text-xl font-medium mb-2 text-gray-700">Взаимодействие
                                         компонентов</h3>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
         {`[Локальный клиент] -> (Запрос) -> [Сервер пакетов]
 [Сервер пакетов] -> (Пакет агента) -> [Локальный клиент]
 [Локальный клиент] -> (Запуск) -> [Агент]
-[Агент] -> (Результаты) -> [Локальный клиент]`}
+[Агент] -> (Результаты) -> [Локальный клиент]`} </code>
       </pre>
                                 </div>
                             </div>
@@ -503,7 +513,8 @@ mcp-client {
                         <section className="mb-10">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-700">2. Стек для реализации</h2>
                             <div className="space-y-4">
-        <pre className="bg-gray-100 p-4 rounded-md">
+        <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
           {`{
   "dependencies": {
     "mcp-sdk": "^3.1.5",
@@ -511,7 +522,7 @@ mcp-client {
     "smolagents": "^1.2.3",
     "@langchain/core": "^0.1.0"
   }
-}`}
+}`} </code>
         </pre>
                                 <p className="text-gray-600">
                                     Основные версии компонентов:
@@ -528,16 +539,15 @@ mcp-client {
                         {/* 3. Создание агентов */}
                         <section className="mb-10">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-700">3. Создание агентов</h2>
-
                             <div className="space-y-6">
                                 {/* Шаг 1: Инициализация агента */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.1 Инициализация агента</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Создание базовой структуры агента с использованием MCP SDK:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`import { createAgent } from 'mcp-sdk';
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.1 Инициализация агента</h3>
+                                    <p className="text-gray-600 mb-2">Создание базовой структуры агента с использованием
+                                        MCP SDK:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`import { createAgent } from 'mcp-sdk';
 import { LangChainAdapter } from 'crewai';
 
 const agentConfig = {
@@ -549,36 +559,38 @@ const agentConfig = {
     repository: 'https://github.com/your-repo'
   }
 };`}
+        </code>
       </pre>
                                 </div>
 
                                 {/* Шаг 2: Конфигурация LLM */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.2 Настройка языковой
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.2 Настройка языковой
                                         модели</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Интеграция с LangChain и настройка параметров модели:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`const llmConfig = LangChainAdapter({
+                                    <p className="text-gray-600 mb-2">Интеграция с LangChain и настройка параметров
+                                        модели:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`const llmConfig = LangChainAdapter({
   model: 'gpt-4',
   temperature: 0.7,
   maxTokens: 4000,
   timeout: 30000,
   cache: true
 });`}
+        </code>
       </pre>
                                 </div>
 
                                 {/* Шаг 3: Регистрация инструментов */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.3 Добавление
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.3 Добавление
                                         инструментов</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Подключение необходимых инструментов для работы агента:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`const tools = [
+                                    <p className="text-gray-600 mb-2">Подключение необходимых инструментов для работы
+                                        агента:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`const tools = [
   {
     name: 'web-search',
     version: '1.2.0',
@@ -595,29 +607,22 @@ const agentConfig = {
     }
   }
 ];`}
+        </code>
       </pre>
                                 </div>
 
                                 {/* Шаг 4: Реализация логики */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.4 Реализация основной
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.4 Реализация основной
                                         логики</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Создание execute-функции для обработки задач:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`async function execute(task) {
-  // Получение контекста
+                                    <p className="text-gray-600 mb-2">Создание execute-функции для обработки задач:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`async function execute(task) {
   const context = await this.getContext();
-  
-  // Генерация запроса
   const prompt = \`Research task: $\{task\}
 Context: $\{context}\`;
-  
-  // Выполнение задачи
   const results = await this.llm.generate(prompt);
-  
-  // Обработка результатов
   return {
     status: 'success',
     data: this.formatResults(results),
@@ -627,18 +632,19 @@ Context: $\{context}\`;
     }
   };
 }`}
+        </code>
       </pre>
                                 </div>
 
                                 {/* Шаг 5: Сборка и экспорт */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.5 Финальная сборка
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.5 Финальная сборка
                                         агента</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Экспорт готового агента для использования в системе:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`export const researchAgent = createAgent({
+                                    <p className="text-gray-600 mb-2">Экспорт готового агента для использования в
+                                        системе:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`export const researchAgent = createAgent({
   ...agentConfig,
   config: {
     llm: llmConfig,
@@ -647,19 +653,18 @@ Context: $\{context}\`;
   execute
 });
 
-// Регистрация в системе
 MCP.registerAgent(researchAgent);`}
+        </code>
       </pre>
                                 </div>
 
                                 {/* Шаг 6: Тестирование */}
                                 <div>
-                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.6 Тестирование агента</h3>
-                                    <p className="text-gray-600 mb-2">
-                                        Пример тестового запуска агента:
-                                    </p>
-                                    <pre className="bg-gray-100 p-4 rounded-md">
-        {`const testTask = 'Analyze market trends for Q2 2024';
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.6 Тестирование агента</h3>
+                                    <p className="text-gray-600 mb-2">Пример тестового запуска агента:</p>
+                                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
+          {`const testTask = 'Analyze market trends for Q2 2024';
 const result = await researchAgent.execute(testTask);
 
 console.log('Test results:', {
@@ -667,6 +672,7 @@ console.log('Test results:', {
   data: result.data,
   metrics: result.metadata
 });`}
+        </code>
       </pre>
                                 </div>
                             </div>
@@ -676,7 +682,8 @@ console.log('Test results:', {
                         <section className="mb-10">
                             <h2 className="text-2xl font-semibold mb-4 text-gray-700">4. Загрузка в Bitbucket</h2>
                             <div className="space-y-4">
-        <pre className="bg-gray-100 p-4 rounded-md">
+        <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
           {`# Клонирование репозитория
 git clone https://stash.sigma.sbrf.ru/your-agent.git
 cd your-repo
@@ -689,7 +696,7 @@ git add .
 git commit -m "Добавлен новый агент"
 
 # Отправка изменений
-git push origin feature/new-agent`}
+git push origin feature/new-agent`} </code>
         </pre>
                                 <p className="text-gray-600">
                                     После создания pull request в Bitbucket, изменения будут проверены и включены в
@@ -703,7 +710,8 @@ git push origin feature/new-agent`}
                             <h2 className="text-2xl font-semibold mb-4 text-gray-700">5. Установка и локальный
                                 запуск</h2>
                             <div className="space-y-4">
-        <pre className="bg-gray-100 p-4 rounded-md">
+        <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className="language-javascript">
           {`# Установка зависимостей
 npm install
 
@@ -716,7 +724,7 @@ npm run dev
 
 # Сборка для production
 npm run build
-npm run start`}
+npm run start`} </code>
         </pre>
                                 <p className="text-gray-600">
                                     Для локальной разработки рекомендуется использовать Node.js версии 18+.

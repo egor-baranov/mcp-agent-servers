@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 // Define types for Server, FAQItem, and Category
 interface Server {
@@ -18,7 +18,7 @@ interface Category {
 }
 
 export default function Page() {
-    // Data arrays with explicit types
+
     const servers: Server[] = [
         {
             title: "Example 1",
@@ -32,6 +32,16 @@ export default function Page() {
         },
         {
             title: "Example 3",
+            description: "Retrieving and analyzing issues from Sentry.io",
+            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        },
+        {
+            title: "Example 4",
+            description: "Retrieving and analyzing issues from Sentry.io",
+            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        },
+        {
+            title: "Example 5",
             description: "Retrieving and analyzing issues from Sentry.io",
             url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
         }
@@ -69,21 +79,22 @@ export default function Page() {
     ];
 
     const categories: Category[] = [
-        { name: "All" },
-        { name: "Search" },
-        { name: "Web Scraping" },
-        { name: "Communication" },
-        { name: "Productivity" },
-        { name: "Database" },
-        { name: "Cloud Service" },
-        { name: "File System" },
-        { name: "Cloud Storage" },
-        { name: "Version Control" },
-        { name: "Other" }
+        {name: "All"},
+        {name: "Search"},
+        {name: "Web Scraping"},
+        {name: "Communication"},
+        {name: "Productivity"},
+        {name: "Database"},
+        {name: "Cloud Service"},
+        {name: "File System"},
+        {name: "Cloud Storage"},
+        {name: "Version Control"},
+        {name: "Other"}
     ];
 
     // Modal state and form data
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -93,13 +104,17 @@ export default function Page() {
 
     // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     // Open and close modal
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+
+    // Open and close info
+    const openInfo = () => setIsInfoOpen(true);
+    const closeInfo = () => setIsInfoOpen(false);
 
     // Handle form submission
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -119,13 +134,23 @@ export default function Page() {
                     Список репозиторев, участвующих в хакатоне по разработке агентов производственного процесса от
                     GigaCode.
                 </p>
-                <div className="flex justify-center">
-                    <button
-                        onClick={openModal}
-                        className="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black border border-gray-300 shadow-sm hover:bg-black hover:text-white hover:shadow-md hover:scale-105 h-12 px-6 py-3 cursor-pointer"
-                    >
-                        Добавить агента
-                    </button>
+                <div className="mb-8 flex flex-wrap gap-2 justify-center">
+                    <div className="flex justify-center">
+                        <button
+                            onClick={openModal}
+                            className="text-white inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-black border border-gray-300 shadow-sm hover:bg-black hover:text-white hover:shadow-md hover:scale-105 h-12 px-6 py-3 cursor-pointer"
+                        >
+                            Добавить агента
+                        </button>
+                    </div>
+                    <div className="flex justify-center">
+                        <button
+                            onClick={openInfo}
+                            className="text-black inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white border border-gray-300 shadow-sm hover:bg-white hover:text-black hover:shadow-md hover:scale-105 h-12 px-6 py-3 cursor-pointer"
+                        >
+                            Инструкция
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -343,6 +368,361 @@ export default function Page() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Info */}
+            {isInfoOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+                    <button
+                        onClick={closeInfo}
+                        className="absolute top-8 right-8 text-gray-500 hover:text-gray-700"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-10 w-10"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </button>
+
+                    <div className="max-w-4xl w-full p-8 overflow-y-auto max-h-[90vh]">
+                        <h1 className="text-3xl font-bold mb-8 text-gray-800">
+                            Реализация агентов в инфраструктуре GigaCode
+                        </h1>
+
+                        {/* 1. Общий вид */}
+                        <section className="mb-10">
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">1. Общий вид системы</h2>
+                            <p className="text-gray-600 mb-4">
+                                Архитектура системы состоит из трех основных компонентов:
+                            </p>
+
+                            <div className="space-y-6">
+                                {/* Локальный MCP клиент */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Локальный MCP клиент</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Локальный клиент (например, Claude Desktop или Zed) обеспечивает:
+                                    </p>
+                                    <ul className="list-disc pl-6 text-gray-600 mb-4">
+                                        <li>Управление агентами</li>
+                                        <li>Локальное выполнение задач</li>
+                                        <li>Интеграцию с IDE</li>
+                                        <li>Отладку и мониторинг</li>
+                                    </ul>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`#  Пример конфигурации клиента
+mcp-client {
+  version: "2.3.1"
+  storage: "/Users/username/.mcp"
+  cache: {
+    size: "2GB"
+    ttl: "24h"
+  }
+}`}
+      </pre>
+                                </div>
+
+                                {/* Сервер пакетов */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Сервер пакетов</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Централизованный репозиторий для хранения и распространения агентов:
+                                    </p>
+                                    <ul className="list-disc pl-6 text-gray-600 mb-4">
+                                        <li>Хостинг пакетов (аналогично pip/conda)</li>
+                                        <li>Версионность агентов</li>
+                                        <li>Система зависимостей</li>
+                                        <li>Интеграция с Bitbucket/GitHub</li>
+                                    </ul>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`# Пример структуры пакета
+/agents
+  /my-agent
+    /v1.0.0
+      manifest.json
+      agent.js
+      dependencies.json
+      README.md`}
+      </pre>
+                                </div>
+
+                                {/* Агенты */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Агенты</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Агенты распространяются в виде архивов и содержат:
+                                    </p>
+                                    <ul className="list-disc pl-6 text-gray-600 mb-4">
+                                        <li>Исполняемый код</li>
+                                        <li>Конфигурационные файлы</li>
+                                        <li>Зависимости</li>
+                                        <li>Документацию</li>
+                                    </ul>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`#  Пример manifest.json
+{
+  "name": "data-processor",
+  "version": "1.0.2",
+  "main": "agent.js",
+  "dependencies": {
+    "mcp-sdk": "^3.1.0",
+    "langchain": "^0.0.84"
+  },
+  "config": {
+    "memory": "512MB",
+    "timeout": "30s"
+  }
+}`}
+      </pre>
+                                </div>
+
+                                {/* Взаимодействие компонентов */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">Взаимодействие
+                                        компонентов</h3>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`[Локальный клиент] -> (Запрос) -> [Сервер пакетов]
+[Сервер пакетов] -> (Пакет агента) -> [Локальный клиент]
+[Локальный клиент] -> (Запуск) -> [Агент]
+[Агент] -> (Результаты) -> [Локальный клиент]`}
+      </pre>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* 2. Стек для реализации */}
+                        <section className="mb-10">
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">2. Стек для реализации</h2>
+                            <div className="space-y-4">
+        <pre className="bg-gray-100 p-4 rounded-md">
+          {`{
+  "dependencies": {
+    "mcp-sdk": "^3.1.5",
+    "crewai": "^0.12.0",
+    "smolagents": "^1.2.3",
+    "@langchain/core": "^0.1.0"
+  }
+}`}
+        </pre>
+                                <p className="text-gray-600">
+                                    Основные версии компонентов:
+                                </p>
+                                <ul className="list-disc pl-6 text-gray-600">
+                                    <li>MCP SDK: 3.1.5</li>
+                                    <li>CrewAI: 0.12.0</li>
+                                    <li>LangChain: 0.1.0</li>
+                                    <li>SmolAgents: 1.2.3</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        {/* 3. Создание агентов */}
+                        <section className="mb-10">
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">3. Создание агентов</h2>
+
+                            <div className="space-y-6">
+                                {/* Шаг 1: Инициализация агента */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.1 Инициализация агента</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Создание базовой структуры агента с использованием MCP SDK:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`import { createAgent } from 'mcp-sdk';
+import { LangChainAdapter } from 'crewai';
+
+const agentConfig = {
+  id: 'research-agent',
+  version: '1.0.0',
+  metadata: {
+    author: 'Your Name',
+    description: 'Agent for research tasks',
+    repository: 'https://github.com/your-repo'
+  }
+};`}
+      </pre>
+                                </div>
+
+                                {/* Шаг 2: Конфигурация LLM */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.2 Настройка языковой
+                                        модели</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Интеграция с LangChain и настройка параметров модели:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`const llmConfig = LangChainAdapter({
+  model: 'gpt-4',
+  temperature: 0.7,
+  maxTokens: 4000,
+  timeout: 30000,
+  cache: true
+});`}
+      </pre>
+                                </div>
+
+                                {/* Шаг 3: Регистрация инструментов */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.3 Добавление
+                                        инструментов</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Подключение необходимых инструментов для работы агента:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`const tools = [
+  {
+    name: 'web-search',
+    version: '1.2.0',
+    config: {
+      provider: 'google',
+      apiKey: process.env.SEARCH_API_KEY
+    }
+  },
+  {
+    name: 'data-analysis',
+    version: '2.1.0',
+    config: {
+      maxDatasetSize: '10MB'
+    }
+  }
+];`}
+      </pre>
+                                </div>
+
+                                {/* Шаг 4: Реализация логики */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.4 Реализация основной
+                                        логики</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Создание execute-функции для обработки задач:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`async function execute(task) {
+  // Получение контекста
+  const context = await this.getContext();
+  
+  // Генерация запроса
+  const prompt = \`Research task: $\{task\}
+Context: $\{context}\`;
+  
+  // Выполнение задачи
+  const results = await this.llm.generate(prompt);
+  
+  // Обработка результатов
+  return {
+    status: 'success',
+    data: this.formatResults(results),
+    metadata: {
+      processingTime: Date.now() - startTime,
+      tokensUsed: results.usage.total_tokens
+    }
+  };
+}`}
+      </pre>
+                                </div>
+
+                                {/* Шаг 5: Сборка и экспорт */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.5 Финальная сборка
+                                        агента</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Экспорт готового агента для использования в системе:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`export const researchAgent = createAgent({
+  ...agentConfig,
+  config: {
+    llm: llmConfig,
+    tools
+  },
+  execute
+});
+
+// Регистрация в системе
+MCP.registerAgent(researchAgent);`}
+      </pre>
+                                </div>
+
+                                {/* Шаг 6: Тестирование */}
+                                <div>
+                                    <h3 className="text-xl font-medium mb-2 text-gray-700">3.6 Тестирование агента</h3>
+                                    <p className="text-gray-600 mb-2">
+                                        Пример тестового запуска агента:
+                                    </p>
+                                    <pre className="bg-gray-100 p-4 rounded-md">
+        {`const testTask = 'Analyze market trends for Q2 2024';
+const result = await researchAgent.execute(testTask);
+
+console.log('Test results:', {
+  status: result.status,
+  data: result.data,
+  metrics: result.metadata
+});`}
+      </pre>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* 4. Загрузка в Bitbucket */}
+                        <section className="mb-10">
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">4. Загрузка в Bitbucket</h2>
+                            <div className="space-y-4">
+        <pre className="bg-gray-100 p-4 rounded-md">
+          {`# Клонирование репозитория
+git clone https://stash.sigma.sbrf.ru/your-agent.git
+cd your-repo
+
+# Создание новой ветки
+git checkout -b feature/new-agent
+
+# Добавление изменений
+git add .
+git commit -m "Добавлен новый агент"
+
+# Отправка изменений
+git push origin feature/new-agent`}
+        </pre>
+                                <p className="text-gray-600">
+                                    После создания pull request в Bitbucket, изменения будут проверены и включены в
+                                    основную ветку.
+                                </p>
+                            </div>
+                        </section>
+
+                        {/* 5. Установка и локальный запуск */}
+                        <section>
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">5. Установка и локальный
+                                запуск</h2>
+                            <div className="space-y-4">
+        <pre className="bg-gray-100 p-4 rounded-md">
+          {`# Установка зависимостей
+npm install
+
+# Настройка переменных окружения
+cp .env.example .env
+# Редактируйте .env файл
+
+# Запуск локального сервера
+npm run dev
+
+# Сборка для production
+npm run build
+npm run start`}
+        </pre>
+                                <p className="text-gray-600">
+                                    Для локальной разработки рекомендуется использовать Node.js версии 18+.
+                                </p>
+                            </div>
+                        </section>
                     </div>
                 </div>
             )}

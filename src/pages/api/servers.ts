@@ -1,5 +1,7 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
-import {withLogging} from "@/lib/logger/logger";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { withLogging } from '@/lib/logger/logger';
+import fs from 'fs/promises';
+import path from 'path';
 
 type MCPServer = {
     title: string;
@@ -16,13 +18,34 @@ type PersistedState = {
     };
 };
 
-let storageData: PersistedState = {
-    servers: [],
-    _persist: {
-        version: -1,
-        rehydrated: false
+const DATA_FILE_PATH = path.join(process.cwd(), 'data', 'storageData.json');
+
+async function initializeStorage(): Promise<PersistedState> {
+    try {
+        const fileContent = await fs.readFile(DATA_FILE_PATH, 'utf-8');
+        const parsedData = JSON.parse(fileContent);
+        console.log("parsed data", parsedData);
+
+        return {
+            servers: Array.isArray(parsedData.servers) ? parsedData.servers : [],
+            _persist: parsedData._persist ?? { version: -1, rehydrated: false },
+        };
+    } catch (error) {
+        console.error('Using default data:', error);
+        return { servers: [], _persist: { version: -1, rehydrated: false } };
     }
-};
+}
+
+async function saveToFile(data: PersistedState) {
+    try {
+        const dir = path.dirname(DATA_FILE_PATH);
+        await fs.mkdir(dir, { recursive: true });
+        await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2));
+        console.log('Data saved to:', DATA_FILE_PATH);
+    } catch (error) {
+        console.error('Save failed:', error);
+    }
+}
 
 export const config = {
     api: {
@@ -38,17 +61,19 @@ async function handler(
 ) {
     try {
         switch (req.method) {
-            case 'GET':
-                console.log('Processing GET request');
-                res.status(200).json(storageData);
+            case 'GET': {
+                const data = await initializeStorage(); // Load fresh data from file
+                res.status(200).json(data);
                 break;
+            }
 
-            case 'POST':
+            case 'POST': {
+                const currentData = await initializeStorage(); // Get latest data
+
                 if (!req.body || typeof req.body !== 'object') {
-                    return res.status(400).json({error: 'Invalid request format'});
+                    return res.status(400).json({ error: 'Invalid request format' });
                 }
 
-                // Handle stringified values
                 const incomingData = {
                     servers: typeof req.body.servers === 'string'
                         ? JSON.parse(req.body.servers)
@@ -58,38 +83,37 @@ async function handler(
                         : req.body._persist
                 };
 
-                // Validate parsed data
                 if (!Array.isArray(incomingData.servers)) {
-                    return res.status(400).json({error: 'Invalid servers format'});
+                    return res.status(400).json({ error: 'Invalid servers format' });
                 }
 
-                storageData = {
-                    servers: incomingData.servers,
+                const updatedData: PersistedState = {
+                    servers: incomingData.servers.concat(currentData.servers),
                     _persist: {
-                        version: incomingData._persist?.version || storageData._persist.version,
-                        rehydrated: incomingData._persist?.rehydrated || storageData._persist.rehydrated
+                        version: incomingData._persist?.version ?? currentData._persist.version,
+                        rehydrated: incomingData._persist?.rehydrated ?? currentData._persist.rehydrated
                     }
                 };
 
+                await saveToFile(updatedData);
                 res.status(200).json({ success: true });
                 break;
+            }
 
-            case 'DELETE':
-                console.log('Processing DELETE request');
-                storageData = {
-                    servers: [],
-                    _persist: storageData._persist
-                };
-                res.status(200).json({success: true});
+            case 'DELETE': {
+                const currentData = await initializeStorage(); // Get latest data
+                const updatedData = { ...currentData, servers: [] };
+                await saveToFile(updatedData);
+                res.status(200).json({ success: true });
                 break;
+            }
 
             default:
-                res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
-                res.status(405).json({error: `Method ${req.method} Not Allowed`});
+                res.status(405).json({ error: `Method ${req.method} Not Allowed` });
         }
     } catch (error) {
         console.error('Handler error:', error);
-        res.status(500).json({error: 'Internal server error'});
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 

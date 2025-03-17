@@ -24,6 +24,7 @@ export const storage: WebStorage = {
 
             if (!response.ok) return null;
             const text = await response.text();
+            console.log("Storage get:", text);
 
             // Validate JSON integrity
             JSON.parse(text); // Throws if invalid

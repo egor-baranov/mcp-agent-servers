@@ -3,6 +3,7 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
 import { storage } from "@/lib/persistence/storage";
 import {PersistedState} from "redux-persist/es/types";
+import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 
 // 1. Define core types
 export interface MCPServer {
@@ -45,13 +46,19 @@ const mcpSlice = createSlice({
 const persistConfig: PersistConfig<MCPState> = {
     key: 'mcp',
     storage,
-    whitelist: ['servers'],
+    stateReconciler: autoMergeLevel1,
     serialize: true, // Enable serialization
     timeout: 150, // 10-second timeout
-    migrate: (state: any) => Promise.resolve({
-        servers: [],
-        _persist: { version: -1, rehydrated: false }
-    })
+    migrate: (state: any) => {
+        // Reset if state is invalid or version mismatch
+        if (!state || !state.servers || typeof state.servers !== 'object') {
+            return Promise.resolve({
+                servers: [],
+                _persist: { version: -1, rehydrated: false }
+            });
+        }
+        return Promise.resolve(state); // Keep existing state if valid [[7]]
+    }
 };
 
 // 5. Create persisted reducer

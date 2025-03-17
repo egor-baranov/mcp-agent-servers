@@ -5,6 +5,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 import {addServer, store} from "@/lib/redux/store";
 import {MCPServer} from "@/app/types";
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import {mcpManager} from "@/lib/MCPManager";
 
 // Define types for Server, FAQItem, and Category
 interface Server {
@@ -25,7 +26,20 @@ interface Category {
 export default function Page() {
 
     // Access servers from Redux state
-    const servers = useAppSelector((state) => state.mcp.servers);
+    const [servers, setServers] = useState<MCPServer[]>([]);
+
+    useEffect(() => {
+        const loadServers = async () => {
+            setServers(mcpManager.getServers());
+        };
+        loadServers().then(r => {});
+    }, []);
+
+    const handleAddServer = async (newServer: MCPServer) => {
+        await mcpManager.addServer(newServer);
+        setServers(mcpManager.getServers());
+    };
+
 
     const faqItems: FAQItem[] = [
         {
@@ -111,7 +125,7 @@ export default function Page() {
             link: formData.link // Match the MCPServer interface
         };
 
-        dispatch(addServer(newServer));
+        handleAddServer(newServer).then(r => {});
         closeModal();
     };
 

@@ -2,17 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
-import {addServer, store} from "@/lib/redux/store";
 import {MCPServer} from "@/app/types";
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import {mcpManager} from "@/lib/MCPManager";
-
-// Define types for Server, FAQItem, and Category
-interface Server {
-    title: string;
-    description: string;
-    url: string;
-}
 
 interface FAQItem {
     question: string;
@@ -25,50 +15,66 @@ interface Category {
 
 export default function Page() {
 
-    // Access servers from Redux state
     const [servers, setServers] = useState<MCPServer[]>([]);
 
     useEffect(() => {
-        const loadServers = async () => {
-            setServers(mcpManager.getServers());
-        };
-        loadServers().then(r => {});
+        fetch('/api/servers')
+            .then((res) => res.json())
+            .then((data) => setServers(data));
     }, []);
 
+    // Add a server
     const handleAddServer = async (newServer: MCPServer) => {
-        await mcpManager.addServer(newServer);
-        setServers(mcpManager.getServers());
+        await fetch('/api/servers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newServer),
+        });
+        // Refetch data to update the list
+        const updatedServers = await (await fetch('/api/servers')).json();
+        setServers(updatedServers);
     };
 
+    // Delete a server
+    const handleDeleteServer = async (id: number) => {
+        await fetch('/api/servers', {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id}),
+        });
+        // Refetch data to update the list
+        const updatedServers = await (await fetch('/api/servers')).json();
+        setServers(updatedServers);
+    };
 
     const faqItems: FAQItem[] = [
         {
-            question: "What is the Model Context Protocol (MCP)?",
-            answer: "The Model Context Protocol (MCP) is an open protocol designed to enable seamless integration between LLM applications and external data sources and tools. It serves as a standardized way to connect LLMs with the context they need."
+            question: "Что такое Model Context Protocol (MCP)?",
+            answer: "Model Context Protocol (MCP) — это открытый протокол, разработанный для обеспечения бесшовной интеграции между приложениями больших языковых моделей (LLM) и внешними источниками данных и инструментами. Он служит стандартизированным способом подключения LLM к необходимому контексту."
         },
         {
-            question: "What problem does MCP solve?",
-            answer: "MCP solves the problem of fragmented integrations between AI systems and data sources. It addresses the challenge of AI models being isolated from data and trapped behind information silos, replacing multiple custom implementations with a single universal protocol."
+            question: "Какую проблему решает MCP?",
+            answer: "MCP решает проблему фрагментированных интеграций между системами ИИ и источниками данных. Он устраняет вызов изоляции моделей ИИ от данных и их закрытия в информационных силосах, заменяя множество индивидуальных реализаций одним универсальным протоколом."
         },
         {
-            question: "Who developed the Model Context Protocol?",
-            answer: "The Model Context Protocol (MCP) was developed by Anthropic."
+            question: "Кто разработал Model Context Protocol?",
+            answer: "Model Context Protocol (MCP) был разработан компанией Anthropic."
         },
         {
-            question: "What are some use cases for MCP?",
-            answer: "MCP can be used in various scenarios including: building AI-powered IDEs, enhancing chat interfaces, creating custom AI workflows, connecting AI systems with external data sources."
+            question: "Какие существуют варианты использования MCP?",
+            answer: "MCP может использоваться в различных сценариях, включая: создание IDE с поддержкой ИИ, улучшение чат-интерфейсов, создание пользовательских рабочих процессов ИИ, подключение систем ИИ к внешним источникам данных."
         },
         {
-            question: "Why is MCP important for AI development?",
-            answer: "The Model Context Protocol (MCP) is an open protocol designed to enable seamless integration between LLM applications and external data sources and tools. It serves as a standardized way to connect LLMs with the context they need."
+            question: "Почему MCP важен для разработки ИИ?",
+            answer: "Model Context Protocol (MCP) — это открытый протокол, предназначенный для обеспечения бесшовной интеграции между приложениями LLM и внешними источниками данных и инструментами. Он служит стандартизированным способом подключения LLM к необходимому контексту."
         },
         {
-            question: "What is the Model Context Protocol (MCP)?",
-            answer: "MCP is important because it provides a universal, open standard that makes it simpler and more reliable to give AI systems access to the data they need, enabling better scaling of connected systems."
+            question: "Что такое Model Context Protocol (MCP)?",
+            answer: "MCP важен, потому что он предоставляет универсальный открытый стандарт, который упрощает и делает более надежным предоставление системам ИИ доступа к необходимым данным, обеспечивая лучшее масштабирование связанных систем."
         },
         {
-            question: "What is the main advantage of using MCP over traditional integration methods?",
-            answer: "The main advantage is that MCP eliminates the need for custom implementations for each new data source by providing a single, standardized protocol, making it easier to scale and maintain AI systems that need to access multiple data sources."
+            question: "Какое главное преимущество использования MCP перед традиционными методами интеграции?",
+            answer: "Главное преимущество заключается в том, что MCP устраняет необходимость в индивидуальных реализациях для каждого нового источника данных, предоставляя единый стандартизированный протокол, что облегчает масштабирование и обслуживание систем ИИ, которым требуется доступ к нескольким источникам данных."
         }
     ];
 
@@ -113,25 +119,33 @@ export default function Page() {
     const openInfo = () => setIsInfoOpen(true);
     const closeInfo = () => setIsInfoOpen(false);
 
-    const dispatch = useAppDispatch();
-
     // In your handleSubmit function
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newServer: MCPServer = {
+            id: Math.random(),
             title: formData.name,
             description: formData.description,
             category: formData.category,
             link: formData.link // Match the MCPServer interface
         };
 
-        handleAddServer(newServer).then(r => {});
+        handleAddServer(newServer).then(r => {
+        });
         closeModal();
     };
 
-    const filteredServers = servers.filter(server =>
-        selectedCategory === "All" || server.category === selectedCategory || server.category === "All"
-    );
+    const handleTrashClick = (serverId) => {
+        console.log(`Deleting server with ID: ${serverId}`);
+        handleDeleteServer(serverId);
+        // Add logic to remove the server from your data source
+    };
+
+    const filteredServers: MCPServer[] = Array.isArray(servers)
+        ? servers.filter(server =>
+            selectedCategory === "All" || server.category === selectedCategory
+        )
+        : [];
 
     useEffect(() => {
         Prism.highlightAll();
@@ -179,7 +193,7 @@ export default function Page() {
                         transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
                         disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2
                         ${
-                            selectedCategory === name 
+                            selectedCategory === name
                                 ? 'cursor-pointer bg-black text-white border border-black shadow hover:bg-black/90 hover:scale-105 hover:shadow-md'
                                 : 'cursor-pointer border border-gray-300 bg-white shadow-sm hover:bg-gray-100 hover:text-gray-900 hover:border-gray-400 hover:scale-105 hover:shadow-md'
                         }
@@ -195,17 +209,47 @@ export default function Page() {
                 {filteredServers.map((server, index) => (
                     <div
                         key={index}
-                        className="rounded-xl border border-gray-300 bg-card text-card-foreground shadow flex flex-col hover:border-accent hover:shadow-md hover:scale-105 transition-all"
+                        className="rounded-xl border border-gray-300 bg-card text-card-foreground shadow flex flex-col hover:border-accent hover:shadow-md hover:scale-105 transition-all relative"
                     >
+                        {/* Trash Button */}
+                        <button
+                            className="absolute top-3 right-3 p-1 bg-white text-black rounded-full hover:bg-white transition-all cursor-pointer"
+                            onClick={() => handleTrashClick(server.id)} // Replace with your trash handler function
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-5 w-5"
+                            >
+                                <path d="M3 6h18"></path>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+
                         {/* Server Title and Description */}
                         <div className="flex flex-col space-y-1.5 p-6">
                             <div className="font-semibold leading-none tracking-tight">
                                 {server.title}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="mt-4 text-sm text-muted-foreground">
                                 {server.description}
                             </div>
+                            {/* Category Chip */}
+                            <div className="mt-2">
+                                <span className="inline-flex items-center gap-1 rounded-full bg-black text-white px-3 py-1 text-xs font-bold">
+                                    {server.category}
+                                </span>
+                            </div>
                         </div>
+
                         {/* View Details Button */}
                         <div className="flex items-center p-6 pt-0 mt-auto">
                             <a

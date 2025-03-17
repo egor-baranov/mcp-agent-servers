@@ -1,4 +1,4 @@
-// src/pages/api/_middleware.ts
+// src/pages/api1/_middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -9,5 +9,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: '/api/:path*',
+    matcher: '/api1/:path*',
 };

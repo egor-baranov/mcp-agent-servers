@@ -1,5 +1,6 @@
 // src/types.ts
 export interface MCPServer {
+    id: number,
     title: string;
     description: string;
     category: string;

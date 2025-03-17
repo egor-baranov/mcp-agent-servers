@@ -17,4 +17,14 @@ module.exports = {
             },
         },
     },
+    api: {
+        bodyParser: {
+            sizeLimit: '1mb',
+        },
+    },
+    logging: {
+        fetches: {
+            fullUrl: true,
+        },
+    },
 };

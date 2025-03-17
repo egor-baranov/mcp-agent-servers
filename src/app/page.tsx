@@ -2,6 +2,9 @@
 import React, {useEffect, useState} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
+import {addServer, store} from "@/lib/redux/store";
+import {MCPServer} from "@/app/types";
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 
 // Define types for Server, FAQItem, and Category
 interface Server {
@@ -21,33 +24,8 @@ interface Category {
 
 export default function Page() {
 
-    const servers: Server[] = [
-        {
-            title: "Example 1",
-            description: "Retrieving and analyzing issues from Sentry.io",
-            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
-        },
-        {
-            title: "Example 2",
-            description: "Retrieving and analyzing issues from Sentry.io",
-            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
-        },
-        {
-            title: "Example 3",
-            description: "Retrieving and analyzing issues from Sentry.io",
-            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
-        },
-        {
-            title: "Example 4",
-            description: "Retrieving and analyzing issues from Sentry.io",
-            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
-        },
-        {
-            title: "Example 5",
-            description: "Retrieving and analyzing issues from Sentry.io",
-            url: "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
-        }
-    ];
+    // Access servers from Redux state
+    const servers = useAppSelector((state) => state.mcp.servers);
 
     const faqItems: FAQItem[] = [
         {
@@ -94,6 +72,8 @@ export default function Page() {
         {name: "Other"}
     ];
 
+    const [selectedCategory, setSelectedCategory] = useState("All");
+
     // Modal state and form data
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -107,6 +87,7 @@ export default function Page() {
     // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
+        console.log("Handle input change: ", value);
         setFormData({...formData, [name]: value});
     };
 
@@ -118,12 +99,25 @@ export default function Page() {
     const openInfo = () => setIsInfoOpen(true);
     const closeInfo = () => setIsInfoOpen(false);
 
-    // Handle form submission
+    const dispatch = useAppDispatch();
+
+    // In your handleSubmit function
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Agent Details:', formData); // Replace with actual submission logic
-        closeModal(); // Close the modal after submission
+        const newServer: MCPServer = {
+            title: formData.name,
+            description: formData.description,
+            category: formData.category,
+            link: formData.link // Match the MCPServer interface
+        };
+
+        dispatch(addServer(newServer));
+        closeModal();
     };
+
+    const filteredServers = servers.filter(server =>
+        selectedCategory === "All" || server.category === selectedCategory || server.category === "All"
+    );
 
     useEffect(() => {
         Prism.highlightAll();
@@ -152,7 +146,7 @@ export default function Page() {
                     <div className="flex justify-center">
                         <button
                             onClick={openInfo}
-                            className="text-black inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white border border-gray-300 shadow-sm hover:bg-white hover:text-black hover:shadow-md hover:scale-105 h-12 px-6 py-3 cursor-pointer"
+                            className="text-black inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-white border border-gray-300 shadow-sm hover:bg-gray-100 hover:text-gray-900 hover:border-gray-400 hover:shadow-md hover:scale-105 h-12 px-6 py-3 cursor-pointer"
                         >
                             Инструкция
                         </button>
@@ -163,28 +157,28 @@ export default function Page() {
             {/* Category Filters */}
             <div className="mb-8 flex flex-wrap gap-2 justify-center">
                 {categories.map(({name}) => (
-                    <a
+                    <button
                         key={name}
-                        href={`/category/${name.toLowerCase().replace(' ', '-')}`}
+                        onClick={() => setSelectedCategory(name)}
                         className={`
-                            inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium
-                            transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
-                            disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2
-                            ${
-                            name === 'All'
-                                ? 'bg-black text-white border border-black shadow hover:bg-black/90 hover:scale-105 hover:shadow-md'
-                                : 'border border-gray-300 bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-accent hover:scale-105 hover:shadow-md'
+                        inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium
+                        transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
+                        disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2
+                        ${
+                            selectedCategory === name 
+                                ? 'cursor-pointer bg-black text-white border border-black shadow hover:bg-black/90 hover:scale-105 hover:shadow-md'
+                                : 'cursor-pointer border border-gray-300 bg-white shadow-sm hover:bg-gray-100 hover:text-gray-900 hover:border-gray-400 hover:scale-105 hover:shadow-md'
                         }
-                        `}
+                    `}
                     >
                         {name}
-                    </a>
+                    </button>
                 ))}
             </div>
 
             {/* Server Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {servers.map((server, index) => (
+                {filteredServers.map((server, index) => (
                     <div
                         key={index}
                         className="rounded-xl border border-gray-300 bg-card text-card-foreground shadow flex flex-col hover:border-accent hover:shadow-md hover:scale-105 transition-all"
@@ -201,10 +195,10 @@ export default function Page() {
                         {/* View Details Button */}
                         <div className="flex items-center p-6 pt-0 mt-auto">
                             <a
-                                href={server.url}
+                                href={server.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all border border-gray-300 bg-background shadow-sm hover:bg-black hover:text-white hover:shadow-md hover:scale-105 w-full h-9 px-4 py-2"
+                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer rounded-md text-sm font-medium transition-all border border-gray-300 bg-background shadow-sm hover:bg-black hover:text-white hover:shadow-md hover:scale-105 w-full h-9 px-4 py-2"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -542,7 +536,8 @@ mcp-client {
                             <div className="space-y-6">
                                 {/* Шаг 1: Инициализация агента */}
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.1 Инициализация агента</h3>
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.1 Инициализация
+                                        агента</h3>
                                     <p className="text-gray-600 mb-2">Создание базовой структуры агента с использованием
                                         MCP SDK:</p>
                                     <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
@@ -660,7 +655,8 @@ MCP.registerAgent(researchAgent);`}
 
                                 {/* Шаг 6: Тестирование */}
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.6 Тестирование агента</h3>
+                                    <h3 className="text-xl font-semibold mb-2 text-gray-700">3.6 Тестирование
+                                        агента</h3>
                                     <p className="text-gray-600 mb-2">Пример тестового запуска агента:</p>
                                     <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
         <code className="language-javascript">

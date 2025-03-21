@@ -4,11 +4,11 @@ import {MCPServerRepository} from "@/lib/MCPServerRepository";
 
 // Initialize the pool with environment variables [[3]][[6]]
 const pool = new pg.Pool({
-    user: 'user',
-    password: 'password',
-    database: 'mcp_db',
-    host: 'localhost',
-    port: 5444,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
 });
 
 
@@ -51,3 +51,4 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: 'Failed to delete server' }, undefined);
     }
 }
+

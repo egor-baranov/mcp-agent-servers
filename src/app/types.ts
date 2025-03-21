@@ -5,6 +5,10 @@ export interface MCPServer {
     description: string;
     category: string;
     link: string;
+    uid: string;
+    active: boolean;
+    created: string;
+    deleted: string;
 }
 
 export interface AppState {

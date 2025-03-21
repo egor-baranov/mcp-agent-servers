@@ -21,14 +21,23 @@ export class MCPServerRepository {
 
     // ADD ONE ENTITY
     async add(server: Omit<MCPServer, 'id'>): Promise<MCPServer> {
-        const { title, description, category, link } = server;
+        const {
+            title,
+            description,
+            category,
+            link,
+            uid,
+            active,
+            created,
+            deleted
+        } = server;
         const query = `
-      INSERT INTO mcp_servers (title, description, category, link)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO mcp_servers (title, description, category, link, uid, active, created, deleted)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *;
     `;
         try {
-            const res = await this.pool.query(query, [title, description, category, link]);
+            const res = await this.pool.query(query, [title, description, category, link, uid, active, created, deleted]);
             return res.rows[0]; // Return the newly created entity with its generated ID
         } catch (error) {
             throw new Error(`Failed to add server: ${error.message}`);
@@ -37,9 +46,15 @@ export class MCPServerRepository {
 
     // REMOVE ONE ENTITY
     async remove(id: number): Promise<void> {
-        const query = 'DELETE FROM mcp_servers WHERE id = $1;';
+        const query = `
+        UPDATE mcp_servers 
+        SET 
+            active = false,
+            deleted = $2
+        WHERE id = $1;
+    `;
         try {
-            await this.pool.query(query, [id]);
+            await this.pool.query(query, [id, new Date().toISOString()]);
         } catch (error) {
             throw new Error(`Failed to remove server: ${error.message}`);
         }

@@ -764,8 +764,8 @@ mcp run agent:CustomAgent`} </code>
                         disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2
                         ${
                             selectedCategory === name
-                                ? 'cursor-pointer bg-black text-white border border-black shadow hover:bg-black/90 hover:scale-105 hover:shadow-md'
-                                : 'cursor-pointer border border-gray-300 bg-white shadow-sm hover:bg-gray-100 hover:text-gray-900 hover:border-gray-400 hover:scale-105 hover:shadow-md'
+                                ? 'cursor-pointer bg-black dark:bg-white text-white dark:text-black border border-black shadow hover:bg-black/90 dark:hover:bg-white hover:scale-105 hover:shadow-md'
+                                : 'cursor-pointer border border-gray-300 bg-white dark:bg-black shadow-sm hover:bg-gray-100 hover:text-gray-900 hover:border-gray-400 hover:scale-105 hover:shadow-md'
                         }
                     `}
                     >
@@ -879,7 +879,7 @@ mcp run agent:CustomAgent`} </code>
                                     </svg>
                                 </summary>
                                 <div className="accordion-content overflow-hidden text-sm">
-                                    <p className="pb-4 pt-2 text-base text-gray-700">{item.answer}</p>
+                                    <p className="pb-4 pt-2 text-base text-gray-700 dark:text-gray-300">{item.answer}</p>
                                 </div>
                             </details>
                         </div>
@@ -901,7 +901,7 @@ mcp run agent:CustomAgent`} </code>
             {isAddAgentOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg">
                     {/* Modal Container */}
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl relative border border-gray-300">
+                    <div className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md shadow-2xl relative border border-gray-300">
                         {/* Close Button */}
                         <button
                             onClick={closeModal}
@@ -987,13 +987,13 @@ mcp run agent:CustomAgent`} </code>
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-4 py-2 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300"
+                                    className="px-4 py-2 rounded-md text-sm font-medium bg-gray-200 dark:bg-gray-950 hover:bg-gray-300 dark:hover:bg-gray-700"
                                 >
                                     Отмена
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 rounded-md text-sm font-medium bg-black text-white hover:bg-gray-800"
+                                    className="px-4 py-2 rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black dark:hover:text-white hover:bg-gray-800"
                                 >
                                     Сохранить
                                 </button>

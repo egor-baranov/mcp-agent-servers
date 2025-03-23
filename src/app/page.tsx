@@ -30,7 +30,7 @@ interface CookieOptions {
     sameSite?: 'Strict' | 'Lax' | 'None';
 }
 
-export function useCookie(name: string): [string | null, (value: string, options?: CookieOptions) => void, () => void] {
+function useCookie(name: string): [string | null, (value: string, options?: CookieOptions) => void, () => void] {
     const [value, setValue] = useState<string | null>(null);
 
     const updateCookieState = useCallback(() => {
@@ -261,7 +261,7 @@ export default function Page() {
     };
 
 
-    const handleTrashClick = (serverId) => {
+    const handleTrashClick = (serverId: number) => {
         console.log(`Deleting server with ID: ${serverId}`);
         handleDeleteServer(serverId);
     };

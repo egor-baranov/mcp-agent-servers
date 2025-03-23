@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
 };
 
 module.exports = {
+    basePath: '/mcp',
     typescript: {
         ignoreBuildErrors: true,
     },

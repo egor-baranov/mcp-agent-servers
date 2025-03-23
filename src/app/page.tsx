@@ -4,6 +4,7 @@ import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
 import {MCPServer} from "@/app/types";
 import Image from 'next/image';
+import * as fs from 'fs';
 
 interface FAQItem {
     question: string;
@@ -237,12 +238,85 @@ export default function Page() {
         return Buffer.from(paddedBase64, "base64").toString("utf-8");
     };
 
+    function encodeToBase64(str: string): string {
+        return Buffer.from(str).toString('base64');
+    }
+
+    function generateGigacodeString(
+        maxPrefixLength: number = 5,
+        maxSuffixLength: number = 5
+    ): string {
+        const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const gigacode = 'gigacode';
+
+        // Generate random prefix
+        const prefixLength = Math.floor(Math.random() * (maxPrefixLength + 1));
+        const prefix = Array.from({length: prefixLength}, () =>
+            charset.charAt(Math.floor(Math.random() * charset.length))
+        ).join(''); // Fixed parentheses here
+
+        // Generate random suffix
+        const suffixLength = Math.floor(Math.random() * (maxSuffixLength + 1));
+        const suffix = Array.from({length: suffixLength}, () =>
+            charset.charAt(Math.floor(Math.random() * charset.length))
+        ).join(''); // Fixed parentheses here
+
+        return prefix + gigacode + suffix;
+    }
+
+    function generateValidGigacodeEntries(requiredCount: number = 200): Array<string> {
+        const validEntries: string[] = [];
+        const existingUUIDs = new Set<string>(); // Track existing UUIDs
+        let attempts = 0;
+        const maxAttempts = requiredCount * 5; // Increased multiplier for uniqueness
+
+        while (validEntries.length < requiredCount && attempts < maxAttempts) {
+            attempts++;
+
+            // Generate new entry
+            const original = generateGigacodeString();
+            const encoded = encodeToBase64(original);
+            const uuid = encodeBase64ToUUID(encoded);
+
+            // Validate and check uniqueness
+            try {
+                const hexString = decodeUUIDToBase64(uuid);
+                const decoded = Buffer.from(hexString, "base64").toString("utf-8");
+
+                if (decoded.includes("gigacode") && !existingUUIDs.has(uuid)) {
+                    validEntries.push(uuid);
+                    existingUUIDs.add(uuid); // Add to uniqueness check set
+                }
+            } catch (error) {
+                // Invalid entry, skip
+            }
+
+            // Progress feedback with uniqueness info
+            if (attempts % 50 === 0) {
+                console.log(`Attempts: ${attempts} | Valid: ${validEntries.length} | Unique: ${existingUUIDs.size}`);
+            }
+        }
+
+        if (validEntries.length < requiredCount) {
+            throw new Error(`Failed to generate ${requiredCount} unique valid entries after ${maxAttempts} attempts`);
+        }
+
+        console.log(`\nGenerated ${validEntries.length} unique valid entries:`);
+        validEntries.forEach((entry, index) => {
+            console.log(`${(index + 1).toString().padStart(3)}: ${entry}`);
+        });
+
+        return validEntries;
+    }
+
+
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
             const hexString = decodeUUIDToBase64(formData.link);
             const decoded = Buffer.from(hexString, "base64").toString("utf-8");
+
 
             if (!decoded.includes("gigacode")) {
                 setError(encodeBase64ToUUID("Wrong password"));
@@ -259,7 +333,6 @@ export default function Page() {
         formData.link = ""
         closeLogin();
     };
-
 
     const handleTrashClick = (serverId: number) => {
         console.log(`Deleting server with ID: ${serverId}`);

@@ -72,32 +72,35 @@ export default function Page() {
     console.log(cookie);
 
     useEffect(() => {
-        fetch('/api/servers')
+        fetch('/mcp/api/servers')
             .then((res) => res.json())
-            .then((data) => setServers(data));
+            .then((data) => {
+                setServers(data)
+                console.log("Set servers:", data);
+            });
     }, []);
 
     // Add a server
     const handleAddServer = async (newServer: MCPServer) => {
-        await fetch('/api/servers', {
+        await fetch('/mcp/api/servers', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newServer),
         });
         // Refetch data to update the list
-        const updatedServers = await (await fetch('/api/servers')).json();
+        const updatedServers = await (await fetch('/mcp/api/servers')).json();
         setServers(updatedServers);
     };
 
     // Delete a server
     const handleDeleteServer = async (id: number) => {
-        await fetch('/api/servers', {
+        await fetch('/mcp/api/servers', {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({id}),
         });
         // Refetch data to update the list
-        const updatedServers = await (await fetch('/api/servers')).json();
+        const updatedServers = await (await fetch('/mcp/api/servers')).json();
         console.log("Updated servers: ", updatedServers);
         setServers(updatedServers);
     };
@@ -344,6 +347,9 @@ export default function Page() {
             (selectedCategory === "All" || server.category === selectedCategory) && server.active
         )
         : [];
+
+    console.log("Servers: ", servers);
+    console.log("Filtered servers: ", filteredServers);
 
     const InfoModal = ({closeInfo}) => {
         return (
@@ -901,7 +907,8 @@ mcp run agent:CustomAgent`} </code>
             {isAddAgentOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg">
                     {/* Modal Container */}
-                    <div className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md shadow-2xl relative border border-gray-300">
+                    <div
+                        className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md shadow-2xl relative border border-gray-300">
                         {/* Close Button */}
                         <button
                             onClick={closeModal}

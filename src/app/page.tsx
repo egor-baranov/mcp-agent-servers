@@ -409,7 +409,7 @@ export default function Page() {
                         </p>
 
                         <Image
-                            src="/mcp-protocol.png"
+                            src="/mcp/mcp-protocol.png"
                             alt="Архитектура системы"
                             width={1200}
                             height={800}
@@ -453,7 +453,7 @@ export default function Page() {
                                 <h3 className="text-xl font-semibold mt-16 mb-2 text-gray-700">Взаимодействие
                                     компонентов</h3>
                                 <Image
-                                    src="/mcp-communication.png"
+                                    src="/mcp/mcp-communication.png"
                                     alt="Архитектура системы"
                                     width={1200}
                                     height={800}
@@ -589,7 +589,7 @@ if __name__ == "__main__":
                                     "Добавить агента" на главном экране</p>
 
                                 <Image
-                                    src="/website.png"
+                                    src="/mcp/website.png"
                                     alt="Архитектура системы"
                                     width={1200}
                                     height={800}
@@ -601,7 +601,7 @@ if __name__ == "__main__":
                                     категорию и добавьте ссылку на репозиторий (для банковского контура – Bitbucket, для
                                     внешнего – GitVerse)</p>
                                 <Image
-                                    src="/add-agent.png"
+                                    src="/mcp/add-agent.png"
                                     alt="Архитектура системы"
                                     width={1200}
                                     height={800}
